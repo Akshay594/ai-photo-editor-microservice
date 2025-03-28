@@ -109,6 +109,27 @@ REACT_APP_API_URL=http://localhost:3000/api
 npm start
 ```
 
+### Docker Setup
+
+1. Build the Docker images for both backend and frontend:
+```bash
+docker-compose build
+```
+
+2. Start the containers:
+```bash
+docker-compose up
+```
+
+3. Access the application:
+   - Backend: `http://localhost:3000`
+   - Frontend: `http://localhost:3001`
+
+4. Stop the containers:
+```bash
+docker-compose down
+```
+
 ## Project Structure
 
 ### Backend
