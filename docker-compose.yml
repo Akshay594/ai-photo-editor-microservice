@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: aragon-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: aragon_image_upload
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - aragon-network
+
+  backend:
+    build:
+      context: ./aragon-image-upload
+      dockerfile: Dockerfile
+    container_name: aragon-backend
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/aragon_image_upload?schema=public
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET}
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    networks:
+      - aragon-network
+    command: sh -c "npx prisma migrate deploy && npm start"
+
+  frontend:
+    build:
+      context: ./aragon-image-upload-frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: http://localhost:3000/api
+    container_name: aragon-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"  # Changed from 80:80 to 8080:80
+    networks:
+      - aragon-network
+
+networks:
+  aragon-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
