@@ -203,7 +203,3 @@ npm run build
 ## License
 
 [MIT](LICENSE)
-
-## Contributors
-
-- Your Name - Developer
