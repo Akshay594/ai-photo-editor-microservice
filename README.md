@@ -2,6 +2,9 @@
 
 A full-stack microservice solution for image upload, validation, and processing with advanced facial detection.
 
+<img src="image.png" alt="Alt text for the image" width="500"/>
+
+
 ## Features
 
 ### Backend
