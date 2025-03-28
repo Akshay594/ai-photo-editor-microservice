@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Image {
+  id          String   @id @default(uuid())
+  userId      String   // In a real app, this would be a foreign key to a User model
+  originalName String
+  fileName    String
+  fileSize    Int
+  fileType    String
+  width       Int?
+  height      Int?
+  s3Key       String   @unique
+  s3Url       String
+  status      ImageStatus
+  rejectionReason String?
+  similarityHash String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([similarityHash])
+}
+
+enum ImageStatus {
+  ACCEPTED
+  REJECTED
+  PROCESSING
+}
